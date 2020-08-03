@@ -1,0 +1,49 @@
+version: "3"
+services:
+  db:
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: postgres
+    expose:
+      - 5432
+    ports:
+      - 5430:5432
+    volumes:
+      - ./conferences_db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - postgres-compose-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "robinsonmu@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "PgAdmin2020"
+    ports:
+      - 9090:80
+    networks:
+      - postgres-compose-network
+
+  # web:
+  #   build:
+  #     context: ./
+  #     dockerfile: ./Docker/Web/Dockerfile
+  #   restart: always
+  #   container_name: web
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - 5000:8080
+  #   networks:
+  #     - postgres-compose-network
+
+networks:
+  postgres-compose-network:
+    driver: bridge
+# mvn package -DskipTests
+# docker-compose up --build --force-recreate --no-deps
+# docker system prune
+# docker system prune --volumes
